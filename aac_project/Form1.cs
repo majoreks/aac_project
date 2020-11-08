@@ -16,7 +16,6 @@ namespace aac_project
 {
     public partial class Form1 : Form
     {
-        TrueOrFalse tof { get; set; }
         TrueOrFalse tofBF { get; set; }
         TrueOrFalse tofGreedy { get; set; }
         TrueOrFalse tofBoth { get; set; }
@@ -76,7 +75,7 @@ namespace aac_project
 
         private void RunGreedy()
         {
-            if(!tofGreedy.IsTrue)
+            if (!tofGreedy.IsTrue)
             {
                 return;
             }
@@ -88,7 +87,7 @@ namespace aac_project
             List<int> testList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 1, 1, 2, 15, 10,
                 12, 3, 15, 16, 17, 12, 3 };
 
-            string[] inputString = controlsInputGreedyTextBox.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] inputString = controlsInputGreedyTextBox.Text.Split(',');
             if (inputString.Length < 4)
             {
                 return;
@@ -106,10 +105,14 @@ namespace aac_project
             });
             tofGreedy.IsTrue = false;
             controlsInputGreedyTextBox.Enabled = false;
+            Stopwatch sw = Stopwatch.StartNew();
             thread.Start();
             thread.Join();
+            sw.Stop();
+            greedyDataGridView.Columns[1].Name = $"Results - {sw.Elapsed.TotalSeconds.ToString()}s";
             tofGreedy.IsTrue = true;
             controlsInputGreedyTextBox.Enabled = true;
+
             greedyDataGridView.Rows.Clear();
             foreach (var list in resultThread)
             {
@@ -156,8 +159,20 @@ namespace aac_project
 
         private int HelperFindIndex(List<List<int>> list)
         {
-            var listSum = list.Select(l => l.Sum()).ToList();
-            return listSum.IndexOf(listSum.Min());
+            var listSum = new List<int>();
+            foreach (var l in list)
+            {
+                listSum.Add(l.Sum());
+            }
+            var indexMin = 0;
+            for (int i = 0; i < listSum.Count; i++)
+            {
+                if (listSum[indexMin] > listSum[i])
+                {
+                    indexMin = i;
+                }
+            }
+            return indexMin;
         }
 
         private void RunBruteForce()
@@ -167,7 +182,11 @@ namespace aac_project
 
         private void greedyDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            MessageBox.Show((sender as DataGridView).Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), e.ColumnIndex==0 ? "Sum" : "Full subset");
+            if (e.RowIndex == -1)
+            {
+                return;
+            }
+            MessageBox.Show((sender as DataGridView).Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), e.ColumnIndex == 0 ? "Sum" : "Full subset");
         }
 
         private void controlsLoadFromFileButton_Click(object sender, EventArgs e)
@@ -201,14 +220,14 @@ namespace aac_project
             {
                 return;
             }
-            string[] txtSplit = txt.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] txtSplit = txt.Split(',');
             try
             {
-                foreach(string num in txtSplit)
+                foreach (string num in txtSplit)
                 {
                     int.Parse(num);
                 }
-                if(txtSplit.Length>=4)
+                if (txtSplit.Length >= 4)
                 {
                     tofGreedy.IsTrue = true;
                     tofGreedy.Clr = Color.Black;
@@ -218,11 +237,15 @@ namespace aac_project
                     }
                 }
             }
-            catch
+            catch (FormatException ex)
             {
                 tofGreedy.Clr = Color.Red;
                 tofGreedy.IsTrue = false;
                 tofBoth.IsTrue = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error caught {ex.ToString()}");
             }
         }
 
@@ -233,7 +256,7 @@ namespace aac_project
             {
                 return;
             }
-            string[] txtSplit = txt.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] txtSplit = txt.Split(',');
             try
             {
                 foreach (string num in txtSplit)
@@ -250,11 +273,15 @@ namespace aac_project
                     }
                 }
             }
-            catch
+            catch (FormatException ex)
             {
                 tofBF.Clr = Color.Red;
                 tofBF.IsTrue = false;
                 tofBoth.IsTrue = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error caught {ex.ToString()}");
             }
         }
     }

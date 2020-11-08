@@ -221,6 +221,7 @@
             // 
             this.controlsInputGreedyTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.controlsInputGreedyTextBox.Location = new System.Drawing.Point(3, 3);
+            this.controlsInputGreedyTextBox.MaxLength = 40000;
             this.controlsInputGreedyTextBox.Name = "controlsInputGreedyTextBox";
             this.controlsInputGreedyTextBox.Size = new System.Drawing.Size(185, 20);
             this.controlsInputGreedyTextBox.TabIndex = 1;
