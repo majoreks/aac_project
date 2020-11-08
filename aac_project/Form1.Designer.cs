@@ -52,6 +52,8 @@
             this.outputQOGroupBox = new System.Windows.Forms.GroupBox();
             this.outputGreedyLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.greedyDataGridView = new System.Windows.Forms.DataGridView();
+            this.bfBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.greedyBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.mainLayoutPanel.SuspendLayout();
             this.controlsGroupBox.SuspendLayout();
             this.controlsLayoutPanel.SuspendLayout();
@@ -379,6 +381,16 @@
             this.greedyDataGridView.TabIndex = 1;
             this.greedyDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.greedyDataGridView_CellDoubleClick);
             // 
+            // bfBackgroundWorker
+            // 
+            this.bfBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bfBackgroundWorker_DoWork);
+            this.bfBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bfBackgroundWorker_RunWorkerCompleted);
+            // 
+            // greedyBackgroundWorker
+            // 
+            this.greedyBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.greedyBackgroundWorker_DoWork);
+            this.greedyBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.greedyBackgroundWorker_RunWorkerCompleted);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -440,6 +452,8 @@
         private System.Windows.Forms.DataGridView bfDataGridView;
         private System.Windows.Forms.Button controlsLoadFromFileButton;
         private System.Windows.Forms.CheckBox controlsSameInputCheckBox;
+        private System.ComponentModel.BackgroundWorker bfBackgroundWorker;
+        private System.ComponentModel.BackgroundWorker greedyBackgroundWorker;
     }
 }
 

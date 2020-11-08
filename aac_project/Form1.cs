@@ -56,7 +56,7 @@ namespace aac_project
             bfDataGridView.AllowUserToAddRows = false;
             bfDataGridView.RowHeadersVisible = false;
             bfDataGridView.Enabled = true;
-            bfDataGridView.ScrollBars = ScrollBars.Horizontal;
+            bfDataGridView.ScrollBars = ScrollBars.Vertical;
 
             tofGreedy = new TrueOrFalse();
             tofBF = new TrueOrFalse();
@@ -97,28 +97,60 @@ namespace aac_project
             {
                 input.Add(int.Parse(num));
             }
-
-            List<List<int>> resultThread = null;
-            Thread thread = new Thread(() =>
-            {
-                resultThread = GreedyFind(input);
-            });
             tofGreedy.IsTrue = false;
             controlsInputGreedyTextBox.Enabled = false;
-            Stopwatch sw = Stopwatch.StartNew();
-            thread.Start();
-            thread.Join();
-            sw.Stop();
-            greedyDataGridView.Columns[1].Name = $"Results - {sw.Elapsed.TotalSeconds.ToString()}s";
-            tofGreedy.IsTrue = true;
-            controlsInputGreedyTextBox.Enabled = true;
+            greedyBackgroundWorker.RunWorkerAsync(input);
+        }
 
-            greedyDataGridView.Rows.Clear();
-            foreach (var list in resultThread)
+        private void RunBruteForce()
+        {
+            if (!tofBF.IsTrue)
             {
-                greedyDataGridView.Rows.Add(new string[] { list.Sum().ToString(), string.Join("  ", list.ToArray()) });
+                return;
             }
-            greedyDataGridView.CurrentCell.Selected = false;
+            string[] inputString = controlsInputBFTextBox.Text.Split(',');
+            if (inputString.Length < 4)
+            {
+                return;
+            }
+            List<int> input = new List<int>();
+            foreach (var num in inputString)
+            {
+                input.Add(int.Parse(num));
+            }
+            tofBF.IsTrue = false;
+            controlsInputBFTextBox.Enabled = false;
+            bfBackgroundWorker.RunWorkerAsync(input);
+           
+        }
+
+        public static IEnumerable<List<List<T>>> GetAllPartitions<T>(T[] elements, int numOfElements)
+        {
+
+            if (numOfElements <= 0)
+            {
+                yield return new List<List<T>>();
+            }
+            else
+            {
+                T elem = elements[numOfElements - 1];
+                var shorter = GetAllPartitions(elements, numOfElements - 1);
+
+                foreach (var part in shorter)
+                {
+                    var newlist = new List<T>();
+                    newlist.Add(elem);
+                    part.Add(newlist);
+                    yield return part;
+                    part.RemoveAt(part.Count - 1);
+                    foreach (var list in part.ToArray())
+                    {
+                        list.Add(elem);
+                        yield return part;
+                        list.RemoveAt(list.Count - 1);
+                    }
+                }
+            }
         }
 
         private List<List<int>> GreedyFind(List<int> S)
@@ -173,11 +205,6 @@ namespace aac_project
                 }
             }
             return indexMin;
-        }
-
-        private void RunBruteForce()
-        {
-            MessageBox.Show("TO DO");
         }
 
         private void greedyDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -283,6 +310,63 @@ namespace aac_project
             {
                 MessageBox.Show($"Error caught {ex.ToString()}");
             }
+        }
+
+        private void bfBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            List<int> input = (List<int>)e.Argument;
+
+            Stopwatch sw = Stopwatch.StartNew();
+            var tmp = GetAllPartitions(input.ToArray(), input.Count);
+            var res = tmp.Where(x => x.Count == 4);
+            sw.Stop();
+            e.Result = (res, sw);
+        }
+
+        private void bfBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            (IEnumerable<List<List<int>>>, Stopwatch) res = ((IEnumerable<List<List<int>>>, Stopwatch))e.Result;
+            bfDataGridView.Columns[1].Name = $"Results - {res.Item2.Elapsed.TotalSeconds.ToString()}s";
+            tofBF.IsTrue = true;
+            controlsInputBFTextBox.Enabled = true;
+            bfDataGridView.Rows.Clear();
+            foreach (var list_list in res.Item1)
+            {
+                foreach (var list in list_list)
+                {
+                    bfDataGridView.Rows.Add(new string[] { list.Sum().ToString(), string.Join(", ", list.ToArray()) });
+                }
+            }
+
+            bfDataGridView.CurrentCell.Selected = false;
+        }
+
+        private void greedyBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            List<int> input = (List<int>)e.Argument;
+
+            Stopwatch sw = Stopwatch.StartNew();
+            var res = GreedyFind(input);
+            sw.Stop();
+            e.Result = (res, sw);
+            
+        }
+
+        private void greedyBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            (List<List<int>>, Stopwatch) res = ((List<List<int>>, Stopwatch))e.Result;
+            //MessageBox.Show(res.ToString());
+
+            greedyDataGridView.Columns[1].Name = $"Results - {res.Item2.Elapsed.TotalSeconds.ToString()}s";
+            tofGreedy.IsTrue = true;
+            controlsInputGreedyTextBox.Enabled = true;
+
+            greedyDataGridView.Rows.Clear();
+            foreach (var list in res.Item1)
+            {
+                greedyDataGridView.Rows.Add(new string[] { list.Sum().ToString(), string.Join(", ", list.ToArray()) });
+            }
+            greedyDataGridView.CurrentCell.Selected = false;
         }
     }
     public class TrueOrFalse : INotifyPropertyChanged
