@@ -34,7 +34,6 @@
             this.controlsSameInputLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.controlsLoadFromFileButton = new System.Windows.Forms.Button();
             this.controlsButtonsLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.controlsSameInputCheckBox = new System.Windows.Forms.CheckBox();
             this.conrolsSameInputCalculateButton = new System.Windows.Forms.Button();
             this.controlsInputGreedyGroupBox = new System.Windows.Forms.GroupBox();
             this.controlsInputGreedyLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -86,16 +85,20 @@
             this.mainLayoutPanel.RowCount = 2;
             this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 37.5F));
             this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 62.5F));
-            this.mainLayoutPanel.Size = new System.Drawing.Size(800, 361);
+            this.mainLayoutPanel.Size = new System.Drawing.Size(804, 361);
             this.mainLayoutPanel.TabIndex = 0;
             // 
             // controlsGroupBox
             // 
+            this.controlsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.controlsGroupBox.Controls.Add(this.controlsLayoutPanel);
-            this.controlsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.controlsGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.controlsGroupBox.MaximumSize = new System.Drawing.Size(798, 129);
+            this.controlsGroupBox.MinimumSize = new System.Drawing.Size(798, 129);
             this.controlsGroupBox.Name = "controlsGroupBox";
-            this.controlsGroupBox.Size = new System.Drawing.Size(794, 129);
+            this.controlsGroupBox.Size = new System.Drawing.Size(798, 129);
             this.controlsGroupBox.TabIndex = 0;
             this.controlsGroupBox.TabStop = false;
             this.controlsGroupBox.Text = "Controls";
@@ -109,7 +112,6 @@
             this.controlsLayoutPanel.Controls.Add(this.controlsButtonsLayoutPanel, 0, 1);
             this.controlsLayoutPanel.Controls.Add(this.controlsInputGreedyGroupBox, 1, 0);
             this.controlsLayoutPanel.Controls.Add(this.controlsInputBFGroupBox, 1, 1);
-            this.controlsLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.controlsLayoutPanel.Location = new System.Drawing.Point(3, 16);
             this.controlsLayoutPanel.Name = "controlsLayoutPanel";
             this.controlsLayoutPanel.RowCount = 2;
@@ -149,7 +151,6 @@
             this.controlsButtonsLayoutPanel.ColumnCount = 2;
             this.controlsButtonsLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.controlsButtonsLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.controlsButtonsLayoutPanel.Controls.Add(this.controlsSameInputCheckBox, 0, 0);
             this.controlsButtonsLayoutPanel.Controls.Add(this.conrolsSameInputCalculateButton, 1, 0);
             this.controlsButtonsLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.controlsButtonsLayoutPanel.Location = new System.Drawing.Point(3, 58);
@@ -159,17 +160,6 @@
             this.controlsButtonsLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.controlsButtonsLayoutPanel.Size = new System.Drawing.Size(388, 49);
             this.controlsButtonsLayoutPanel.TabIndex = 1;
-            // 
-            // controlsSameInputCheckBox
-            // 
-            this.controlsSameInputCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.controlsSameInputCheckBox.AutoSize = true;
-            this.controlsSameInputCheckBox.Location = new System.Drawing.Point(112, 3);
-            this.controlsSameInputCheckBox.Name = "controlsSameInputCheckBox";
-            this.controlsSameInputCheckBox.Size = new System.Drawing.Size(79, 17);
-            this.controlsSameInputCheckBox.TabIndex = 2;
-            this.controlsSameInputCheckBox.Text = "Same input";
-            this.controlsSameInputCheckBox.UseVisualStyleBackColor = true;
             // 
             // conrolsSameInputCalculateButton
             // 
@@ -282,7 +272,7 @@
             this.outputMainGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.outputMainGroupBox.Location = new System.Drawing.Point(3, 138);
             this.outputMainGroupBox.Name = "outputMainGroupBox";
-            this.outputMainGroupBox.Size = new System.Drawing.Size(794, 220);
+            this.outputMainGroupBox.Size = new System.Drawing.Size(798, 220);
             this.outputMainGroupBox.TabIndex = 1;
             this.outputMainGroupBox.TabStop = false;
             this.outputMainGroupBox.Text = "Output";
@@ -299,7 +289,7 @@
             this.outputLayoutPanel.Name = "outputLayoutPanel";
             this.outputLayoutPanel.RowCount = 1;
             this.outputLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.outputLayoutPanel.Size = new System.Drawing.Size(788, 201);
+            this.outputLayoutPanel.Size = new System.Drawing.Size(792, 201);
             this.outputLayoutPanel.TabIndex = 0;
             // 
             // outputBFGroupBox
@@ -308,7 +298,7 @@
             this.outputBFGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.outputBFGroupBox.Location = new System.Drawing.Point(3, 3);
             this.outputBFGroupBox.Name = "outputBFGroupBox";
-            this.outputBFGroupBox.Size = new System.Drawing.Size(388, 195);
+            this.outputBFGroupBox.Size = new System.Drawing.Size(390, 195);
             this.outputBFGroupBox.TabIndex = 0;
             this.outputBFGroupBox.TabStop = false;
             this.outputBFGroupBox.Text = "Brute force algorithm";
@@ -325,7 +315,7 @@
             this.outputBFLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
             this.outputBFLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.outputBFLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 176F));
-            this.outputBFLayoutPanel.Size = new System.Drawing.Size(382, 176);
+            this.outputBFLayoutPanel.Size = new System.Drawing.Size(384, 176);
             this.outputBFLayoutPanel.TabIndex = 0;
             // 
             // bfDataGridView
@@ -338,7 +328,7 @@
             this.bfDataGridView.Name = "bfDataGridView";
             this.bfDataGridView.ReadOnly = true;
             this.bfDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.bfDataGridView.Size = new System.Drawing.Size(376, 170);
+            this.bfDataGridView.Size = new System.Drawing.Size(378, 170);
             this.bfDataGridView.TabIndex = 2;
             this.bfDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.greedyDataGridView_CellDoubleClick);
             // 
@@ -346,9 +336,9 @@
             // 
             this.outputQOGroupBox.Controls.Add(this.outputGreedyLayoutPanel);
             this.outputQOGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.outputQOGroupBox.Location = new System.Drawing.Point(397, 3);
+            this.outputQOGroupBox.Location = new System.Drawing.Point(399, 3);
             this.outputQOGroupBox.Name = "outputQOGroupBox";
-            this.outputQOGroupBox.Size = new System.Drawing.Size(388, 195);
+            this.outputQOGroupBox.Size = new System.Drawing.Size(390, 195);
             this.outputQOGroupBox.TabIndex = 1;
             this.outputQOGroupBox.TabStop = false;
             this.outputQOGroupBox.Text = "Greedy algorithm";
@@ -364,7 +354,7 @@
             this.outputGreedyLayoutPanel.RowCount = 1;
             this.outputGreedyLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
             this.outputGreedyLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.outputGreedyLayoutPanel.Size = new System.Drawing.Size(382, 176);
+            this.outputGreedyLayoutPanel.Size = new System.Drawing.Size(384, 176);
             this.outputGreedyLayoutPanel.TabIndex = 0;
             // 
             // greedyDataGridView
@@ -377,7 +367,7 @@
             this.greedyDataGridView.Name = "greedyDataGridView";
             this.greedyDataGridView.ReadOnly = true;
             this.greedyDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.greedyDataGridView.Size = new System.Drawing.Size(376, 170);
+            this.greedyDataGridView.Size = new System.Drawing.Size(378, 170);
             this.greedyDataGridView.TabIndex = 1;
             this.greedyDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.greedyDataGridView_CellDoubleClick);
             // 
@@ -395,10 +385,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 361);
+            this.ClientSize = new System.Drawing.Size(804, 361);
             this.Controls.Add(this.mainLayoutPanel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(820, 820);
+            this.MinimumSize = new System.Drawing.Size(820, 400);
             this.Name = "Form1";
             this.Text = "A&C Project";
             this.mainLayoutPanel.ResumeLayout(false);
@@ -406,7 +397,6 @@
             this.controlsLayoutPanel.ResumeLayout(false);
             this.controlsSameInputLayoutPanel.ResumeLayout(false);
             this.controlsButtonsLayoutPanel.ResumeLayout(false);
-            this.controlsButtonsLayoutPanel.PerformLayout();
             this.controlsInputGreedyGroupBox.ResumeLayout(false);
             this.controlsInputGreedyLayoutPanel.ResumeLayout(false);
             this.controlsInputGreedyLayoutPanel.PerformLayout();
@@ -451,7 +441,6 @@
         private System.Windows.Forms.DataGridView greedyDataGridView;
         private System.Windows.Forms.DataGridView bfDataGridView;
         private System.Windows.Forms.Button controlsLoadFromFileButton;
-        private System.Windows.Forms.CheckBox controlsSameInputCheckBox;
         private System.ComponentModel.BackgroundWorker bfBackgroundWorker;
         private System.ComponentModel.BackgroundWorker greedyBackgroundWorker;
     }

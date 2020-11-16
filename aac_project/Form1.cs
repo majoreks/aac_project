@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace aac_project
 {
@@ -18,7 +19,9 @@ namespace aac_project
     {
         TrueOrFalse tofBF { get; set; }
         TrueOrFalse tofGreedy { get; set; }
-        TrueOrFalse tofBoth { get; set; }
+        TrueOrFalseBoth tofBoth { get; set; }
+        StreamWriter swBF;
+        StreamWriter swGreedy;
 
         public Form1()
         {
@@ -39,20 +42,28 @@ namespace aac_project
             greedyDataGridView.AllowUserToAddRows = false;
             greedyDataGridView.RowHeadersVisible = false;
             greedyDataGridView.Enabled = true;
-            greedyDataGridView.ScrollBars = ScrollBars.Horizontal;
 
-            bfDataGridView.ColumnCount = 2;
-            bfDataGridView.Columns[1].Name = greedyDataGridView.Columns[1].Name;
-            bfDataGridView.Columns[1].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            bfDataGridView.Columns[1].HeaderCell.Style.Font = new Font(DataGridView.DefaultFont, FontStyle.Bold);
-            bfDataGridView.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            bfDataGridView.Columns[1].Frozen = false;
+            bfDataGridView.ColumnCount = 3;
+            bfDataGridView.Columns[2].Name = greedyDataGridView.Columns[1].Name;
+            bfDataGridView.Columns[2].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            bfDataGridView.Columns[2].HeaderCell.Style.Font = new Font(DataGridView.DefaultFont, FontStyle.Bold);
+            bfDataGridView.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            bfDataGridView.Columns[2].Frozen = false;
             bfDataGridView.Columns[0].Name = greedyDataGridView.Columns[0].Name;
             bfDataGridView.Columns[0].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             bfDataGridView.Columns[0].HeaderCell.Style.Font = new Font(DataGridView.DefaultFont, FontStyle.Bold);
             bfDataGridView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             bfDataGridView.Columns[0].Frozen = false;
             bfDataGridView.Columns[0].FillWeight = 10;
+            bfDataGridView.Columns[1].Name = "Occ";
+            bfDataGridView.Columns[1].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            bfDataGridView.Columns[1].HeaderCell.Style.Font = new Font(DataGridView.DefaultFont, FontStyle.Bold);
+            bfDataGridView.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            bfDataGridView.Columns[1].Frozen = false;
+            bfDataGridView.Columns[1].FillWeight = 10;
+            bfDataGridView.Columns[0].SortMode = DataGridViewColumnSortMode.NotSortable;
+            bfDataGridView.Columns[1].SortMode = DataGridViewColumnSortMode.NotSortable;
+            bfDataGridView.Columns[2].SortMode = DataGridViewColumnSortMode.NotSortable;
             bfDataGridView.AllowUserToAddRows = false;
             bfDataGridView.RowHeadersVisible = false;
             bfDataGridView.Enabled = true;
@@ -60,12 +71,15 @@ namespace aac_project
 
             tofGreedy = new TrueOrFalse();
             tofBF = new TrueOrFalse();
-            tofBoth = new TrueOrFalse();
+            tofBoth = new TrueOrFalseBoth();
             controlsInputGreedyTextBox.DataBindings.Add("ForeColor", tofGreedy, "Clr");
             controlsInputGreedyButton.DataBindings.Add("Enabled", tofGreedy, "IsTrue");
             controlsInputBFButton.DataBindings.Add("Enabled", tofBF, "IsTrue");
             controlsInputBFTextBox.DataBindings.Add("ForeColor", tofBF, "Clr");
-            conrolsSameInputCalculateButton.DataBindings.Add("Enabled", tofBoth, "IsTrue");
+            conrolsSameInputCalculateButton.DataBindings.Add("Enabled", tofBoth, "IsTrueBoth");
+
+            swBF = new StreamWriter(@"C:\Szkola\aac\outBF.txt");
+            swGreedy = new StreamWriter(@"C:\Szkola\aac\outGreedy.txt");
         }
 
         private void controlsInputGreedyButton_Click(object sender, EventArgs e)
@@ -99,6 +113,7 @@ namespace aac_project
             }
             tofGreedy.IsTrue = false;
             controlsInputGreedyTextBox.Enabled = false;
+            tofBoth.IsTrueBoth = false;
             greedyBackgroundWorker.RunWorkerAsync(input);
         }
 
@@ -120,25 +135,44 @@ namespace aac_project
             }
             tofBF.IsTrue = false;
             controlsInputBFTextBox.Enabled = false;
+            tofBoth.IsTrueBoth = false;
+            //input.Sort();
             bfBackgroundWorker.RunWorkerAsync(input);
-           
+            //var tmp = GetAllPartitions(input.ToArray(), input.Count);
+            //var res = tmp.Where(x => x.Count == 4);
+            //MessageBox.Show("XD");
+            //greedyDataGridView.Columns[1].Name = $"Results"; //- {res.Item2.Elapsed.TotalSeconds.ToString()}s
+            //tofBF.IsTrue = true;
+            //controlsInputBFTextBox.Enabled = true;
+            //bfDataGridView.Rows.Clear();
+            //foreach (var list_list in res)
+            //{
+            //    foreach (var list in list_list)
+            //    {
+            //        bfDataGridView.Rows.Add(new string[] { list.Sum().ToString(), string.Join(", ", list.ToArray()) });
+            //    }
+            //}
+
+            //bfDataGridView.CurrentCell.Selected = false;
         }
 
-        public static IEnumerable<List<List<T>>> GetAllPartitions<T>(T[] elements, int numOfElements)
+        // adapted from a similar question on so
+        public static IEnumerable<List<List<int>>> GetPartitions(int[] elements, int numOfElements)
         {
 
             if (numOfElements <= 0)
             {
-                yield return new List<List<T>>();
+                yield return new List<List<int>>();
             }
             else
             {
-                T elem = elements[numOfElements - 1];
-                var shorter = GetAllPartitions(elements, numOfElements - 1);
+               
+                int elem = elements[numOfElements - 1];
+                var shorter = GetPartitions(elements, numOfElements - 1);
 
                 foreach (var part in shorter)
                 {
-                    var newlist = new List<T>();
+                    var newlist = new List<int>();
                     newlist.Add(elem);
                     part.Add(newlist);
                     yield return part;
@@ -213,7 +247,12 @@ namespace aac_project
             {
                 return;
             }
-            MessageBox.Show((sender as DataGridView).Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), e.ColumnIndex == 0 ? "Sum" : "Full subset");
+            var grid = (sender as DataGridView);
+            if (grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value is null)
+            {
+                return;
+            }
+            MessageBox.Show(grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), e.ColumnIndex == 0 ? "Sum" : "Full subset");
         }
 
         private void controlsLoadFromFileButton_Click(object sender, EventArgs e)
@@ -258,9 +297,9 @@ namespace aac_project
                 {
                     tofGreedy.IsTrue = true;
                     tofGreedy.Clr = Color.Black;
-                    if (tofBF.IsTrue)
+                    if (tofBF.IsTrue && tofGreedy.IsTrue)
                     {
-                        tofBoth.IsTrue = true;
+                        tofBoth.IsTrueBoth = true;
                     }
                 }
             }
@@ -268,7 +307,7 @@ namespace aac_project
             {
                 tofGreedy.Clr = Color.Red;
                 tofGreedy.IsTrue = false;
-                tofBoth.IsTrue = false;
+                tofBoth.IsTrueBoth = false;
             }
             catch (Exception ex)
             {
@@ -294,9 +333,9 @@ namespace aac_project
                 {
                     tofBF.IsTrue = true;
                     tofBF.Clr = Color.Black;
-                    if (tofGreedy.IsTrue)
+                    if (tofBF.IsTrue && tofGreedy.IsTrue)
                     {
-                        tofBoth.IsTrue = true;
+                        tofBoth.IsTrueBoth = true;
                     }
                 }
             }
@@ -304,7 +343,7 @@ namespace aac_project
             {
                 tofBF.Clr = Color.Red;
                 tofBF.IsTrue = false;
-                tofBoth.IsTrue = false;
+                tofBoth.IsTrueBoth = false;
             }
             catch (Exception ex)
             {
@@ -317,28 +356,50 @@ namespace aac_project
             List<int> input = (List<int>)e.Argument;
 
             Stopwatch sw = Stopwatch.StartNew();
-            var tmp = GetAllPartitions(input.ToArray(), input.Count);
+            var tmp = GetPartitions(input.ToArray(), input.Count);
             var res = tmp.Where(x => x.Count == 4);
+            var res_optimal = FindMinPartitions(res);
             sw.Stop();
-            e.Result = (res, sw);
+            e.Result = (res_optimal, sw);
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    Thread.Sleep(1000);
+            //}
         }
 
         private void bfBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            (IEnumerable<List<List<int>>>, Stopwatch) res = ((IEnumerable<List<List<int>>>, Stopwatch))e.Result;
-            bfDataGridView.Columns[1].Name = $"Results - {res.Item2.Elapsed.TotalSeconds.ToString()}s";
+            (List<List<List<int>>>, Stopwatch) res = ((List<List<List<int>>>, Stopwatch))e.Result;
             tofBF.IsTrue = true;
+            if (tofGreedy.IsTrue)
+            {
+                tofBoth.IsTrueBoth = true;
+            }
             controlsInputBFTextBox.Enabled = true;
+            //MessageBox.Show(res.Item1.Count.ToString());
             bfDataGridView.Rows.Clear();
+            MyDictionary myDictionary = new MyDictionary();
+
             foreach (var list_list in res.Item1)
             {
-                foreach (var list in list_list)
+                myDictionary.Add(list_list);
+            }
+            bfDataGridView.Columns[2].Name = $"{myDictionary.Count.ToString()} Results - {res.Item2.Elapsed.TotalSeconds.ToString()}s";
+            foreach (var pair in myDictionary.GetDict())
+            {
+                foreach (var list in pair.Key)
                 {
-                    bfDataGridView.Rows.Add(new string[] { list.Sum().ToString(), string.Join(", ", list.ToArray()) });
+                    bfDataGridView.Rows.Add(new string[] { list.Sum().ToString(), pair.Value.ToString(), string.Join(", ", list.ToArray()) });
+                }
+                //bfDataGridView.Rows.Add();
+                if (myDictionary.GetDict().Last().Key != pair.Key)
+                {
+                    bfDataGridView.Rows.Add();
                 }
             }
-
-            bfDataGridView.CurrentCell.Selected = false;
+            swBF.WriteLine(res.Item2.Elapsed.TotalSeconds.ToString());
+            swBF.Flush();
+            //.CurrentCell.Selected = false;
         }
 
         private void greedyBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -359,6 +420,10 @@ namespace aac_project
 
             greedyDataGridView.Columns[1].Name = $"Results - {res.Item2.Elapsed.TotalSeconds.ToString()}s";
             tofGreedy.IsTrue = true;
+            if (tofBF.IsTrue)
+            {
+                tofBoth.IsTrueBoth = true;
+            }
             controlsInputGreedyTextBox.Enabled = true;
 
             greedyDataGridView.Rows.Clear();
@@ -367,6 +432,61 @@ namespace aac_project
                 greedyDataGridView.Rows.Add(new string[] { list.Sum().ToString(), string.Join(", ", list.ToArray()) });
             }
             greedyDataGridView.CurrentCell.Selected = false;
+            swGreedy.WriteLine(res.Item2.Elapsed.TotalSeconds.ToString());
+            swGreedy.Flush();
+        }
+
+        private List<List<List<int>>> FindMinPartitions(IEnumerable<List<List<int>>> paritions)
+        {
+            List<List<List<int>>> exactSolutions = new List<List<List<int>>>();
+            Dictionary<List<List<int>>, int> minMaxIndexList = new Dictionary<List<List<int>>, int>();
+            Dictionary<int, int> minMaxIndex = new Dictionary<int, int>();
+            List<int> sums = new List<int>();
+            List<int> exactSolutionsIndex = new List<int>();
+            foreach (var parition in paritions.Select((Value, Index) => new { Value, Index }))
+            {
+                sums.Clear();
+                foreach (var set in parition.Value)
+                {
+                    sums.Add(set.Sum());
+                }
+                if (sums.Distinct().Count()==1 && sums.Count==4) 
+                {
+                    exactSolutionsIndex.Add(parition.Index);
+                }
+                else if (exactSolutions.Count == 0)
+                {
+                    var sumDiff = sums.Max() - sums.Min();
+                    if (parition.Index==0)
+                    {
+                        minMaxIndex.Add(parition.Index, sumDiff);
+                        continue;
+                    }
+                    if (sumDiff <= minMaxIndex.Where(x=>x.Value == minMaxIndex.Min(e => e.Value)).First().Value)
+                    {
+                        minMaxIndex.Add(parition.Index, sumDiff);
+                    }
+                }
+            }
+            if (exactSolutionsIndex.Count==0)
+            {
+                var tmp = minMaxIndex.Where(x => x.Value == minMaxIndex.Min(e => e.Value));
+                List<List<List<int>>> res = new List<List<List<int>>>();
+                foreach (var key in tmp)
+                {
+                    res.Add(paritions.ElementAt(key.Key));
+                }
+                return res;
+            }
+            else
+            {
+                List<List<List<int>>> res = new List<List<List<int>>>();
+                foreach (var key in exactSolutionsIndex)
+                {
+                    res.Add(paritions.ElementAt(key));
+                }
+                return res;
+            }
         }
     }
     public class TrueOrFalse : INotifyPropertyChanged
@@ -403,5 +523,122 @@ namespace aac_project
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public class TrueOrFalseBoth : INotifyPropertyChanged
+    {
+        private bool _isTrueBF;
+        private bool _isTrueGreedy;
+        private bool _isTrue;
+        public event PropertyChangedEventHandler PropertyChanged;
+        public TrueOrFalseBoth()
+        {
+            _isTrueBF = false;
+            _isTrueGreedy = false;
+        }
+        public bool IsTrueBoth
+        {
+            get { return _isTrue; }
+            set
+            {
+                _isTrue = value;
+                RaisePropertyChanged("IsTrueBoth");
+            }
+        }
+        public bool IsTrueGreedy
+        {
+            get { return _isTrueGreedy; }
+            set
+            {
+                if (value && _isTrueBF)
+                {
+                    this.IsTrueBoth = true;
+                }
+                _isTrueGreedy = value;
+            }
+        }
+
+        public bool IsTrueBF
+        {
+            get { return _isTrueBF; }
+            set
+            {
+                if (value && _isTrueGreedy)
+                {
+                    this.IsTrueBoth = true;
+                }
+                _isTrueBF = value;
+            }
+        }
+        private void RaisePropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class MyDictionary
+    {
+        private Dictionary<List<List<int>>, int> dict;
+
+        public MyDictionary()
+        {
+            dict = new Dictionary<List<List<int>>, int>();
+        }
+        public void Add(List<List<int>> list)
+        {
+            if (dict.Count == 0)
+            {
+                dict.Add(list, 1);
+                return;
+            }
+            foreach (var elem in dict)
+            {
+                if (MyEquals(elem.Key, list))
+                {
+                    dict[elem.Key]++;
+                    return;
+                }
+            }
+            dict.Add(list, 1);
+        }
+        private static bool MyEquals(List<List<int>> list1, List<List<int>> list2)
+        {
+            if (list1.Count != list2.Count)
+            {
+                return false;
+            }
+            var list11 = list1.OrderByDescending(l => l.Sum()).ToList();
+            var list22 = list2.OrderByDescending(l => l.Sum()).ToList();
+            for (int i = 0; i < list11.Count; i++)
+            {
+                if (list11[i].Sum() != list22[i].Sum())
+                {
+                    return false;
+                }
+                list11[i].Sort();
+                list22[i].Sort();
+                for (int j = 0; j < list11[i].Count; j++)
+                {
+                    if (list11[i][j] != list22[i][j])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        public Dictionary<List<List<int>>, int> GetDict()
+        {
+            return dict;
+        }
+
+        public int Count
+        {
+            private set { }
+            get { return dict.Count; }
+        }
+
     }
 }
