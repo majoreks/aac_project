@@ -78,8 +78,8 @@ namespace aac_project
             controlsInputBFTextBox.DataBindings.Add("ForeColor", tofBF, "Clr");
             conrolsSameInputCalculateButton.DataBindings.Add("Enabled", tofBoth, "IsTrueBoth");
 
-            swBF = new StreamWriter(@"C:\Szkola\aac\outBF.txt");
-            swGreedy = new StreamWriter(@"C:\Szkola\aac\outGreedy.txt");
+            //swBF = new StreamWriter(@"C:\Szkola\aac\outBF.txt");
+            //swGreedy = new StreamWriter(@"C:\Szkola\aac\outGreedy.txt");
         }
 
         private void controlsInputGreedyButton_Click(object sender, EventArgs e)
@@ -397,8 +397,8 @@ namespace aac_project
                     bfDataGridView.Rows.Add();
                 }
             }
-            swBF.WriteLine(res.Item2.Elapsed.TotalSeconds.ToString());
-            swBF.Flush();
+            //swBF.WriteLine(res.Item2.Elapsed.TotalSeconds.ToString());
+            //swBF.Flush();
             //.CurrentCell.Selected = false;
         }
 
@@ -432,8 +432,8 @@ namespace aac_project
                 greedyDataGridView.Rows.Add(new string[] { list.Sum().ToString(), string.Join(", ", list.ToArray()) });
             }
             greedyDataGridView.CurrentCell.Selected = false;
-            swGreedy.WriteLine(res.Item2.Elapsed.TotalSeconds.ToString());
-            swGreedy.Flush();
+            //swGreedy.WriteLine(res.Item2.Elapsed.TotalSeconds.ToString());
+            //swGreedy.Flush();
         }
 
         private List<List<List<int>>> FindMinPartitions(IEnumerable<List<List<int>>> paritions)
